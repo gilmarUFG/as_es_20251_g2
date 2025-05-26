@@ -92,7 +92,7 @@ O **Scheduling Service** gerencia agendamentos de consultas virtuais (RF-03) e r
 
 ### 3.2 Modelo de Coordenação
 
-A comunicação deve ser implementada predominantemente de forma síncrona via **REST APIs** para operações principais, atendendo ao requisito de escalabilidade (QA-04) através de simplicidade de implementação e debugging. Um **API Gateway simples** (nginx) serve como ponto de entrada único, implementando autenticação centralizada e rate limiting para suportar o crescimento de 500 para 5.000 usuários.
+A comunicação deve ser implementada predominantemente de forma síncrona via **REST APIs** para operações principais, atendendo ao requisito de escalabilidade (QA-04) através de simplicidade de implementação e debugging. Um **API Gateway simples** (nginx) serve como ponto de entrada único, implementando autenticação centralizada e rate limiting para suportar o crescimento de 500 para 5.000 usuários. Este API Gateway direcionará as requisições aos serviços correspondentes gerenciados pelo Docker Swarm. 
 
 Esta decisão foi influenciada pelo requisito de feedbacks anônimos (RF-01), que necessita de controle rigoroso de acesso e auditoria, beneficiando-se de um ponto de entrada centralizado onde todas as requisições podem ser logadas e monitoradas adequadamente.
 
@@ -104,13 +104,13 @@ Além disso, também decidimos por usar o **Redis** que atua como cache para ses
 
 ### 3.4 Gestão de Recursos
 
-Decidimos pela implementação da containerização com **Docker** e orquestração via **Docker Compose** para simplificar deployment e gerenciamento. Esta decisão atende ao requisito de disponibilidade (QA-01) permitindo restart automático de containers e facilita escalonamento manual quando necessário para suportar crescimento de usuários.
+Decidimos pela implementação da containerização com **Docker** e e orquestração via Docker Swarm para simplificar deployment e gerenciamento. O Docker Swarm permite a criação de um cluster de nós Docker, onde nossos serviços podem ser replicados e distribuídos. Portanto, esta decisão atende ao requisito de disponibilidade (QA-01) já que o Swarm pode automaticamente reagendar containers de serviços que falhem em um nó para outros nós saudáveis do cluster, minimizando o tempo de inatividade. Além disso, facilita o escalonamento (QA-04) manual ou automático dos serviços, permitindo aumentar o número de réplicas dos containers para lidar com o crescimento de usuários e picos de demanda, distribuindo a carga entre os nós do cluster.
 
-Um **load balancer** (nginx) distribui requisições entre múltiplas instâncias dos serviços, atendendo diretamente aos requisitos de disponibilidade (QA-01) e escalabilidade (QA-04). Para confiabilidade (QA-02), configuramos backup automatizado diário do PostgreSQL, garantindo RPO de 4 horas conforme especificado.
+Um load balancer (Nginx) atua como API Gateway/Reverse Proxy na borda, distribuindo requisições externas para os serviços do Docker Swarm. O routing mesh interno do Swarm balanceia automaticamente a carga entre múltiplas instâncias de cada serviço. Por fim, para confiabilidade (QA-02), configuramos backup automatizado diário do PostgreSQL, garantindo RPO de 4 horas conforme especificado.
 
 ### 3.5 Mapeamento entre Elementos Arquiteturais
 
-Estruturamos deployment em três camadas claras: **nginx** como load balancer e entrada única, **três microserviços** (User, Wellness, Scheduling) como lógica de negócio, e **PostgreSQL + Redis** como camada de dados. Esta estrutura simples facilita compreensão e manutenção, atendendo indiretamente ao requisito de escalabilidade ao permitir escalonamento independente de cada camada.
+Estruturamos deployment em três camadas claras: **Nginx** como API Gateway e ponto de entrada único (camada de borda), os **três microserviços** (User, Wellness, Scheduling) como lógica de negócio, gerenciados e orquestrados pelo **Docker Swarm** em um cluster de nós (camada de aplicação), e **PostgreSQL + Redis** como camada de dados. Esta estrutura simples facilita compreensão e manutenção do nosso sistema.
 
 ### 3.6 Decisões de Binding Time
 
@@ -120,7 +120,7 @@ Decidimos por usarmos **variáveis de ambiente** e **arquivos de configuração*
 
 Optamos por **Java com Spring Boot** para microserviços, fornecendo Spring Security integrado que atende diretamente ao requisito de segurança (QA-03) e facilita implementação de anonimização para feedbacks (RF-01). **React** no frontend oferece interface responsiva necessária para boa experiência do usuário.
 
-Dessa maneira, a combinação **PostgreSQL** + **Redis** + **Docker Compose** atende aos requisitos de qualidade, pois permite disponibilidade através de restart automático de containers, confiabilidade via backup automatizado, segurança através de isolamento de containers, e escalabilidade via múltiplas instâncias gerenciadas pelo compose. Esta escolha tecnológica mantém simplicidade operacional enquanto atende todos os requisitos funcionais e não funcionais identificados nesta primeira iteração.
+Dessa maneira, a combinação **PostgreSQL + Redis + Docker Swarm** atende aos requisitos de qualidade, pois permite disponibilidade através de restart automático de containers, confiabilidade via backup automatizado, segurança através de isolamento de containers, e escalabilidade via múltiplas instâncias gerenciadas pelo Swarm. Esta escolha tecnológica mantém simplicidade operacional enquanto atende todos os requisitos funcionais e não funcionais identificados nesta primeira iteração.
 
 ---
 
