@@ -121,3 +121,359 @@ Decidimos por usarmos **variáveis de ambiente** e **arquivos de configuração*
 Optamos por **Java com Spring Boot** para microserviços, fornecendo Spring Security integrado que atende diretamente ao requisito de segurança (QA-03) e facilita implementação de anonimização para feedbacks (RF-01). **React** no frontend oferece interface responsiva necessária para boa experiência do usuário.
 
 Dessa maneira, a combinação **PostgreSQL** + **Redis** + **Docker Compose** atende aos requisitos de qualidade, pois permite disponibilidade através de restart automático de containers, confiabilidade via backup automatizado, segurança através de isolamento de containers, e escalabilidade via múltiplas instâncias gerenciadas pelo compose. Esta escolha tecnológica mantém simplicidade operacional enquanto atende todos os requisitos funcionais e não funcionais identificados nesta primeira iteração.
+
+---
+
+# 4. Visões Arquiteturais
+
+As visões arquiteturais representam diferentes perspectivas do sistema, cada uma focalizando aspectos específicos relevantes para diferentes stakeholders. Para o sistema de bem-estar corporativo, apresentamos quatro visões principais que capturam os elementos essenciais da arquitetura.
+
+## 4.1 Visão de Módulos
+
+A visão de módulos descreve como o sistema é estruturado em unidades de código e suas dependências. Esta visão é fundamental para desenvolvedores, arquitetos e gestores técnicos compreenderem a organização do código e planejarem atividades de desenvolvimento e manutenção.
+
+### 4.1.1 Decomposição Modular
+
+O sistema está organizado em uma arquitetura de microserviços com três módulos principais:
+
+**User Service Module**
+- Responsabilidades: Autenticação, autorização, gestão de perfis de usuário
+- Justificativa: Centraliza operações sensíveis de segurança em um único ponto controlado
+- Dependências: PostgreSQL (schema user_data), Redis (cache de sessões)
+
+**Wellness Service Module**
+- Responsabilidades: Feedbacks anônimos, recomendações personalizadas, gamificação
+- Justificativa: Agrupa funcionalidades que compartilham dados comportamentais dos usuários
+- Dependências: PostgreSQL (schema wellness_data), Redis (cache de recomendações)
+
+**Scheduling Service Module**
+- Responsabilidades: Agendamento de consultas virtuais e reuniões com especialistas
+- Justificativa: Isola integrações externas (calendários, videoconferência) dos demais domínios
+- Dependências: PostgreSQL (schema scheduling_data), APIs externas de calendário
+
+### 4.1.2 Módulos de Infraestrutura
+
+**Gateway Module**
+- Implementação: nginx como reverse proxy
+- Responsabilidades: Roteamento, autenticação centralizada, rate limiting
+- Justificativa: Ponto único de entrada que facilita monitoramento e controle de acesso
+
+**Data Layer Module**
+- PostgreSQL: Armazenamento persistente com schemas isolados por serviço
+- Redis: Cache distribuído para sessões e dados frequentemente acessados
+
+## 4.2 Visão de Componentes e Conectores
+
+Esta visão descreve elementos em tempo de execução e suas interações, sendo essencial para compreender o comportamento dinâmico do sistema e fluxos de dados.
+
+### 4.2.1 Componentes Principais
+
+**API Gateway Component**
+- Tipo: Proxy/Load Balancer
+- Responsabilidades: Distribuição de carga, autenticação inicial, logging
+- Interfaces: HTTP REST (entrada), HTTP REST (saída para microserviços)
+
+**User Service Component**
+- Tipo: Microserviço
+- Responsabilidades: Gestão de identidade, autorização baseada em roles
+- Interfaces: REST API (entrada), Database Connection (PostgreSQL), Cache Connection (Redis)
+
+**Wellness Service Component**
+- Tipo: Microserviço
+- Responsabilidades: Processamento de feedbacks anônimos, engine de recomendações, sistema de pontuação
+- Interfaces: REST API (entrada), Database Connection (PostgreSQL), Cache Connection (Redis)
+
+**Scheduling Service Component**
+- Tipo: Microserviço
+- Responsabilidades: Gestão de agendamentos, integração com sistemas externos
+- Interfaces: REST API (entrada), Database Connection (PostgreSQL), External API Connector
+
+### 4.2.2 Conectores e Fluxos de Dados
+
+**Fluxo de Feedback Anônimo (RF-01)**
+1. Cliente → API Gateway (HTTPS)
+2. API Gateway → User Service (autenticação)
+3. API Gateway → Wellness Service (processamento anônimo)
+4. Wellness Service → PostgreSQL (armazenamento criptografado)
+
+**Fluxo de Recomendações Personalizadas (RF-04)**
+1. Cliente → API Gateway → Wellness Service
+2. Wellness Service → Redis (verificação de cache)
+3. Se não cached: Wellness Service → PostgreSQL (análise de dados)
+4. Wellness Service → Redis (cache do resultado)
+5. Retorno da recomendação ao cliente
+
+## 4.3 Visão de Alocação
+
+A visão de alocação mapeia elementos de software para elementos do ambiente de execução, sendo crucial para deployment, operação e gestão de recursos.
+
+### 4.3.1 Deployment Architecture
+
+**Container Layer**
+- nginx-gateway: Container para API Gateway e load balancing
+- user-service: Container para User Service (múltiplas instâncias)
+- wellness-service: Container para Wellness Service (múltiplas instâncias)
+- scheduling-service: Container para Scheduling Service (múltiplas instâncias)
+
+**Data Layer**
+- postgresql-primary: Container principal do PostgreSQL
+- postgresql-replica: Container de réplica para leitura (backup)
+- redis-cache: Container para cache distribuído
+
+**Orquestração**
+- Docker Compose: Gerenciamento de containers e redes
+- Configuração de restart automático para atender QA-01 (Disponibilidade)
+- Health checks para monitoramento contínuo
+
+### 4.3.2 Network Architecture
+
+**Internal Network (Docker Network)**
+- Comunicação entre microserviços via rede interna isolada
+- PostgreSQL e Redis acessíveis apenas internamente
+- DNS interno para resolução de nomes de serviços
+
+**External Network**
+- API Gateway exposto na porta 80/443
+- Conexões externas apenas via HTTPS
+- Rate limiting configurado no gateway
+
+## 4.4 Visão de Informação
+
+Esta visão descreve a estrutura e fluxo dos dados no sistema, essencial para compreender como as informações são capturadas, processadas e armazenadas.
+
+### 4.4.1 Modelo de Dados Conceitual
+
+**Domínio de Usuários**
+- Entidades: User, Profile, Role, Session
+- Dados sensíveis: Email, nome, departamento
+- Anonimização: Hash irreversível para feedbacks
+
+**Domínio de Bem-estar**
+- Entidades: Feedback (anônimo), Recommendation, Challenge, UserActivity
+- Dados comportamentais: Participação em atividades, pontuação, progresso
+- Agregações: Métricas de engajamento, indicadores de clima organizacional
+
+**Domínio de Agendamentos**
+- Entidades: Appointment, Specialist, Calendar, Notification
+- Integrações: Dados de calendário externo, links de videoconferência
+- Histórico: Registros de consultas para relatórios de utilização
+
+### 4.4.2 Fluxos de Informação Críticos
+
+**Anonimização de Feedbacks**
+1. Captura: Dados identificáveis temporariamente associados
+2. Processamento: Aplicação de hash criptográfico irreversível
+3. Armazenamento: Apenas dados anonimizados são persistidos
+4. Auditoria: Log de operações sem dados pessoais
+
+**Geração de Recomendações**
+1. Coleta: Dados comportamentais agregados (não identificáveis)
+2. Análise: Algoritmos de machine learning básicos para padrões
+3. Personalização: Matching com perfil de usuário via identificadores hasheados
+4. Entrega: Recomendações contextualizadas via API
+
+# 5. Táticas e Padrões Aplicados
+
+As táticas arquiteturais são abordagens específicas para atingir atributos de qualidade, enquanto os padrões são soluções comprovadas para problemas recorrentes. Esta seção documenta como estas técnicas foram aplicadas no sistema de bem-estar corporativo.
+
+## 5.1 Táticas para Disponibilidade
+
+### 5.1.1 Detecção de Falhas
+
+**Health Checks Automáticos**
+- Implementação: Endpoints `/health` em todos os microserviços
+- Frequência: Monitoramento a cada 30 segundos via Docker Compose
+- Ação: Restart automático de containers com falha
+- Atende: QA-01 (Disponibilidade de 99,5%)
+
+**Heartbeat Monitoring**
+- Implementação: Logs estruturados com timestamps para rastreamento
+- Escopo: Todas as operações críticas (autenticação, feedbacks, agendamentos)
+- Benefício: Detecção proativa de degradação de performance
+
+### 5.1.2 Recuperação de Falhas
+
+**Restart Automático**
+- Configuração: Docker Compose com política `restart: always`
+- Timeout: 30 segundos para restart de containers com falha
+- Escalonamento: Aumento automático de recursos durante picos
+
+**Circuit Breaker Pattern**
+- Implementação: Spring Boot Actuator para monitoramento de integrações externas
+- Escopo: Comunicação com APIs de calendário e videoconferência (RF-03)
+- Fallback: Agendamento manual quando APIs externas estão indisponíveis
+
+### 5.1.3 Prevenção de Falhas
+
+**Load Balancing**
+- Implementação: nginx upstream com algoritmo round-robin
+- Escopo: Distribuição entre múltiplas instâncias de cada microserviço
+- Benefício: Evita sobrecarga de instâncias individuais
+
+**Rate Limiting**
+- Configuração: 1000 requests/minuto por IP no API Gateway
+- Proteção: Previne ataques DDoS e uso abusivo
+- Graceful Degradation: Respostas HTTP 429 com retry-after headers
+
+## 5.2 Táticas para Confiabilidade
+
+### 5.2.1 Detecção de Erros
+
+**Logging Estruturado**
+- Implementação: SLF4J com Logback em formato JSON
+- Níveis: ERROR para falhas críticas, WARN para degradações, INFO para auditoria
+- Correlação: Request ID único para rastreamento end-to-end
+
+**Data Validation**
+- Bean Validation (JSR-303) para validação de entrada
+- Sanitização de dados antes do processamento
+- Verificação de integridade referencial no banco de dados
+
+### 5.2.2 Recuperação de Erros
+
+**Database Backup Strategy**
+- Frequência: Backup completo diário, logs transacionais a cada 4 horas
+- RPO: 4 horas conforme QA-02
+- RTO: 2 horas com restore automatizado
+- Armazenamento: Múltiplas versões com rotação de 30 dias
+
+**Transaction Management**
+- Spring @Transactional para operações atômicas
+- Rollback automático em caso de falhas
+- Idempotência em operações críticas (feedbacks, agendamentos)
+
+### 5.2.3 Prevenção de Erros
+
+**Input Sanitization**
+- Validação rigorosa de todos os inputs do usuário
+- Escape de caracteres especiais para prevenir injection attacks
+- Limites de tamanho para campos de texto livre
+
+**Database Constraints**
+- Chaves primárias e estrangeiras para integridade referencial
+- Check constraints para validação de dados
+- Unique constraints para prevenir duplicação
+
+## 5.3 Táticas para Segurança
+
+### 5.3.1 Resistir a Ataques
+
+**Authentication & Authorization**
+- JWT tokens com expiração de 1 hora
+- Refresh tokens com rotação automática
+- Role-based access control (RBAC) implementado via Spring Security
+
+**Data Encryption**
+- HTTPS obrigatório para todas as comunicações
+- AES-256 para dados sensíveis em repouso
+- Hash irreversível (SHA-256 + salt) para anonimização de feedbacks
+
+### 5.3.2 Detectar Ataques
+
+**Audit Logging**
+- Log de todas as operações de autenticação
+- Rastreamento de acessos a dados sensíveis
+- Monitoramento de padrões anômalos de uso
+
+**Rate Limiting Inteligente**
+- Limites diferenciados por tipo de operação
+- Bloqueio temporário por IP suspeito
+- Alertas automáticos para administradores
+
+### 5.3.3 Recuperar de Ataques
+
+**Session Management**
+- Invalidação automática de sessões comprometidas
+- Logout forçado em caso de atividade suspeita
+- Notificação ao usuário sobre acessos não autorizados
+
+## 5.4 Táticas para Escalabilidade
+
+### 5.4.1 Gerenciar Recursos
+
+**Caching Strategy**
+- Redis para cache de sessões (TTL: 1 hora)
+- Cache de recomendações personalizadas (TTL: 24 horas)
+- Cache de dados estáticos (configurações, listas de especialistas)
+
+**Connection Pooling**
+- HikariCP para pooling de conexões PostgreSQL
+- Configuração: 10 conexões por instância de microserviço
+- Timeout: 30 segundos para evitar bloqueios
+
+### 5.4.2 Gerenciar Demanda
+
+**Horizontal Scaling**
+- Docker Compose configurado para múltiplas instâncias
+- Auto-scaling manual baseado em métricas de CPU e memória
+- Load balancing automático via nginx
+
+**Data Partitioning**
+- Particionamento por schema no PostgreSQL
+- Separação de dados por microserviço
+- Índices otimizados para queries frequentes
+
+## 5.5 Padrões Arquiteturais Aplicados
+
+### 5.5.1 Microservices Pattern
+
+**Implementação**
+- Decomposição por domínio de negócio (User, Wellness, Scheduling)
+- Comunicação via REST APIs
+- Banco de dados independente por serviço
+
+**Benefícios Realizados**
+- Desenvolvimento independente por equipes
+- Deploy independente de cada serviço
+- Escalabilidade granular por funcionalidade
+
+### 5.5.2 API Gateway Pattern
+
+**Implementação**
+- nginx como reverse proxy e load balancer
+- Centralização de concerns transversais (autenticação, logging, rate limiting)
+- Roteamento baseado em path para microserviços
+
+**Benefícios Realizados**
+- Ponto único de entrada para clientes
+- Simplificação de configuração de segurança
+- Monitoramento centralizado de tráfego
+
+### 5.5.3 Database per Service Pattern
+
+**Implementação**
+- PostgreSQL com schemas isolados
+- Sem compartilhamento de tabelas entre serviços
+- Comunicação via APIs quando necessário dados de outros domínios
+
+**Benefícios Realizados**
+- Evolução independente de modelos de dados
+- Isolamento de falhas entre domínios
+- Flexibilidade tecnológica por serviço
+
+### 5.5.4 Layered Architecture Pattern
+
+**Implementação dentro de cada Microserviço**
+- Controller Layer: REST endpoints e validação de entrada
+- Service Layer: Lógica de negócio e orquestração
+- Repository Layer: Abstração de acesso a dados
+- Entity Layer: Modelo de domínio
+
+**Benefícios Realizados**
+- Separação clara de responsabilidades
+- Facilidade de testes unitários por camada
+- Manutenibilidade e evolução controlada
+
+### 5.5.5 Repository Pattern
+
+**Implementação**
+- Spring Data JPA para abstração de acesso a dados
+- Interfaces específicas por entidade de domínio
+- Implementação automática via Spring Boot
+
+**Benefícios Realizados**
+- Testabilidade através de mocks
+- Flexibilidade para mudança de tecnologia de persistência
+- Queries otimizadas e type-safe
+
+
