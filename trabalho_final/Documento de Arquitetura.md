@@ -1,5 +1,36 @@
 # Documento de Arquitetura de Software - Sistema de Bem-estar Corporativo
 
+## 1. Visão Geral do Sistema
+
+O sistema de bem-estar corporativo surge como resposta à crescente demanda por ambientes de trabalho mais saudáveis e humanizados. Em um cenário onde a produtividade está cada vez mais ligada ao equilíbrio emocional e à satisfação dos colaboradores, as organizações buscam soluções tecnológicas que promovam a saúde integral de seus times de forma mensurável.
+
+Este sistema foi concebido como uma plataforma digital integrada, voltada ao fortalecimento do bem-estar no ambiente corporativo por meio de recursos que apoiam tanto a escuta ativa quanto a oferta de suporte personalizado. Seu escopo ultrapassa o simples monitoramento de indicadores de saúde, atuando também como instrumento de cultura organizacional positiva, transparência e valorização humana.
+
+### 1.1 Motivação e Justificativa
+
+A saúde mental e o bem-estar no ambiente de trabalho deixaram de ser temas secundários para se tornarem pilares centrais da sustentabilidade organizacional. Pesquisas recentes apontam que ambientes tóxicos e a ausência de suporte emocional impactam diretamente nos índices de produtividade, absenteísmo, rotatividade e satisfação geral dos colaboradores.
+
+A pandemia acelerou discussões sobre equilíbrio entre vida pessoal e profissional, evidenciando a necessidade de canais mais empáticos, flexíveis e orientados ao cuidado. Nesse cenário, organizações passaram a buscar soluções digitais que sejam mais do que simples ferramentas de RH — mas sim extensões da cultura organizacional voltadas ao bem-estar contínuo.
+
+Justifica-se, portanto, o desenvolvimento deste sistema como uma resposta concreta à demanda por um espaço seguro e estruturado, onde colaboradores possam ser ouvidos, acolhidos e estimulados a manter hábitos mais saudáveis. Ao mesmo tempo, fornece aos gestores dados consistentes e mecanismos de apoio que promovem ambientes mais saudáveis, colaborativos e sustentáveis.
+
+### 1.2 Objetivos Estratégicos
+
+O sistema tem como metas principais:
+
+- **Promover escuta ativa e segura**: viabilizar que colaboradores relatem sentimentos, situações e sugestões com anonimato e confiança.
+- **Fortalecer ações de bem-estar corporativo**: facilitar o agendamento, gestão e avaliação de atividades como consultas, rodas de conversa e desafios coletivos.
+- **Aumentar o engajamento e a satisfação**: estimular a participação dos colaboradores em iniciativas de saúde e qualidade de vida por meio de gamificação e recomendações personalizadas.
+- **Gerar inteligência organizacional**: apoiar gestores com relatórios e insights sobre o clima organizacional e as principais demandas de bem-estar.
+- **Facilitar integração com especialistas**: permitir que profissionais parceiros atuem diretamente na plataforma, mantendo a confidencialidade e o controle administrativo.
+- **Reduzir custos indiretos com saúde**: ao antecipar questões críticas por meio de indicadores comportamentais e intervenções oportunas.
+
+Estes objetivos sustentam uma abordagem holística e contínua do bem-estar corporativo, transformando-o em um processo estruturado e mensurável — e não apenas em ações pontuais ou campanhas isoladas.
+
+O público-alvo principal são empresas de médio e grande porte que desejam implementar programas contínuos de bem-estar, com foco em prevenção, engajamento e melhoria do clima organizacional. Os usuários finais incluem colaboradores, gestores de RH, psicólogos organizacionais e consultores parceiros.
+
+O sistema foi idealizado para operar como uma extensão natural da experiência do colaborador na empresa, sendo acessível tanto via desktop quanto dispositivos móveis, com interface intuitiva e adaptável a diferentes perfis de usuários. Além disso, seu modelo modular facilita a adoção progressiva por organizações que estejam em diferentes estágios de maturidade em relação ao bem-estar corporativo.
+
 ## 2. Requisitos Arquiteturalmente Significativos (ASRs)
 
 Os Requisitos Arquiteturalmente Significativos são aqueles que têm impacto substancial nas decisões arquiteturais e na estrutura do sistema. Para o sistema de bem-estar corporativo, trataremos inicialmente dos requisitos funcionais de maior prioridade, seguidos pelos requisitos de qualidade que são arquiteturalmente significativos.
