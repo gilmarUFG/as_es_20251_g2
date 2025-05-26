@@ -1,0 +1,176 @@
+@startuml
+title Diagrama arquitetural (Componentes e conectores + Alocação)
+skinparam linetype ortho
+
+actor User
+
+folder FrontEnd {
+    node Ingress [
+        Controlador de ingresso
+        ---
+        Atua como balanceador de carga
+        ===
+        NGINX / TRAEFIK
+    ]
+
+
+    node ArquivosEstáticos #line.dashed {
+        node pod1 [
+            Servidor de arquivos estáticos
+            ---
+            Replicável conforme demanda;
+            ---
+            Distribui os arquivos do Front-end
+            ===
+            NGINX
+        ]
+    }
+
+
+    User --> Ingress : HTTPS - TCP (443)
+    Ingress <---> pod1 : HTTP - TCP (automapeado)
+
+}
+
+boundary Front
+user <--> Front : input
+Ingress -> Front : serve: HTTPS - TCP (443)
+
+
+folder BackEnd {
+    node IngressBack [
+        API Gateway
+        ---
+        Atua como balanceador de carga;
+        Atua como proxy reverso;
+        Implementa rate limiting
+        ===
+        Kubernetes Gateway API
+    ]
+
+    node UserService #line.dashed {
+        node pod2 [
+            API REST
+            ---
+            Replicável conforme demanda
+            ---
+            Gestão de identidades e papéis;
+            Implementa regras de negócio;
+            Realiza a manipulação de dados
+            ===
+            Java + Spring Boot
+        ]
+    }
+
+    database UserDB [
+        Dados dos usuários
+        ---
+        nome,
+        email,
+        departamento...
+        ===
+        PostgreeSQL
+    ]
+
+    database UserCache [
+        Cache
+        ===
+        Redis
+    ]
+
+    node WelnessService #line.dashed {
+        node pod3 [
+            API REST
+            ---
+            Replicável conforme demanda
+            ---
+            Gestão de feedbacks anônimos;
+            Geração de recomendações personalizadas;
+            Gera métricas de Gamificação;
+            Implementa regras de negócio;
+            Realiza manipulação de dados
+            ===
+            Java + Spring Boot
+        ]
+    }
+
+    database WellnessDB [
+        Dados de bem-estar
+        ---
+        Dados comportamentais,
+        Participação em atividades,
+        Progresso,
+        Pontuação...
+        ===
+        PostgreeSQL
+    ]
+
+    database WellnessCache [
+        Cache
+        ===
+        Redis
+    ]
+
+    node SchedulingService #line.dashed {
+        node pod4 [
+            API REST
+            ---
+            Replicável conforme demanda
+            ---
+            Agendamenta de consultas virtuais;
+            Reuniões com especialistas
+            ===
+            Java + Spring Boot
+        ]
+    } 
+
+    database ScheduleDB [
+        Dados de bem-estar
+        ---
+        Agendamentos;
+        Especialistas;
+        Calendários;
+        Notificações...
+        ===
+        PostgreeSQL
+    ]
+    
+    database ScheduleCache [
+        Cache
+        ===
+        Redis
+    ]
+}
+
+Front <--> IngressBack : Input satinitizado - HTTPS - TCP (443)
+IngressBack <-d-> pod2 : REST - HTTP - TCP (automapeado)
+pod2 <--> UserDB : TCP (5432)
+pod2 <--> UserCache : ReSP - TCP (6379)
+IngressBack <-d-> pod3 : REST - HTTP - TCP (automapeado)
+pod3 <--> WellnessDB : TCP (5432)
+pod3 <--> WellnessCache : ReSP - TCP (6379)
+IngressBack <-d-> pod4
+pod4 <--> ScheduleDB : TCP (5432)
+pod4 <--> ScheduleCache : ReSP - TCP (6379)
+
+' node KubernetesControlPlane [
+'     Plano de Controle do Kubernetes
+'     ---
+'     Controla a replicação de pods escaláveis;
+'     Verifica a saúde dos serviços em execução
+' ]
+' 
+' KubernetesControlPlane <-> ArquivosEstáticos : Controle de Replicação e Health Check - HTTPS - TCP (443)
+' KubernetesControlPlane <-> UserService : Controle de Replicação e Health Check - HTTPS - TCP (443)
+' KubernetesControlPlane <-> WelnessService : Controle de Replicação e Health Check - HTTPS - TCP (443)
+' KubernetesControlPlane <-> SchedulingService : Controle de Replicação e Health Check - HTTPS - TCP (443)
+
+node AgregadorLogs [
+    Agregador de logs
+]
+
+ArquivosEstáticos ----> AgregadorLogs : envia log - HTTP - TCP (Automapeado)
+UserService ----> AgregadorLogs : envia log - HTTP - TCP (Automapeado)
+WelnessService ----> AgregadorLogs : envia log - HTTP - TCP (Automapeado)
+SchedulingService ----> AgregadorLogs
+@enduml
