@@ -1,0 +1,49 @@
+@startuml
+
+package "Aplicativo de Bem-Estar Corporativo" {
+
+    package "Módulo de Conteúdo de Bem-Estar" {
+        [Gerenciador de Guias]
+        [Módulo de Meditação]
+        [Módulo de Respiração]
+        [Dicas de Ergonomia]
+        [Sistema de Desafios]
+    }
+
+    package "Módulo de Serviços ao Colaborador" {
+        [Gerenciador de Serviços Externos]
+        [Reuniões de Bem-Estar]
+    }
+
+    package "Módulo de Interação com Usuário" {
+        [Gerenciador de Feedback]
+        [Sistema de Reports Anônimos]
+    }
+
+    package "Módulo de Consultas" {
+        [Agendamento de Consultas]
+        [Gerenciador de Especialistas]
+    }
+
+    package "Módulo de Inteligência de Uso" {
+        [Detector de Padrões de Uso]
+        [Sistema de Pausas]
+        [Recomendações Personalizadas]
+    }
+
+    [Gerenciador de Guias] --> [Módulo de Meditação]
+    [Gerenciador de Guias] --> [Módulo de Respiração]
+
+    [Gerenciador de Serviços Externos] --> [Feedback]
+
+    [Agendamento de Consultas] --> [Gerenciador de Especialistas]
+
+    [Recomendações Personalizadas] --> [Detector de Padrões de Uso]
+
+    [Sistema de Pausas] --> [Detector de Padrões de Uso]
+
+    [Gerenciador de Feedback] --> [Feedback]
+    [Sistema de Reports Anônimos] --> [FeedbackAnom]
+}
+
+@enduml
