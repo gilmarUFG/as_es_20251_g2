@@ -476,4 +476,64 @@ As táticas arquiteturais são abordagens específicas para atingir atributos de
 - Flexibilidade para mudança de tecnologia de persistência
 - Queries otimizadas e type-safe
 
+# 6. Análise de Qualidade 
+
+Esta seção avalia como as decisões arquiteturais adotadas contribuem para alcançar os atributos de qualidade priorizados para o sistema, considerando aspectos como disponibilidade, confiabilidade, segurança, escalabilidade, manutenibilidade e desempenho. A análise é baseada na estrutura arquitetural proposta, nas táticas e padrões aplicados e nas necessidades explícitas dos stakeholders.
+
+## 6.1 Métricas e Critérios de Aceitação
+
+| Atributo         | Métrica / Critério de Aceitação                                             | 
+|------------------|-----------------------------------------------------------------------------|
+| Disponibilidade  | ≥ 99,5% de uptime mensal                                                    | 
+| Confiabilidade   | Taxa de falhas < 1% em transações críticas                                  |
+| Segurança        | 100% das requisições autenticadas e autorizadas corretamente                | 
+| Escalabilidade   | Capacidade de atender a picos 10x a carga média sem degradação significativa| 
+
+## 6.2 Disponibilidade
+
+A arquitetura emprega múltiplas táticas voltadas à disponibilidade, demonstrando um compromisso claro com a meta de 99,5% definida pela QA-01. A presença de *health checks* automáticos, combinada com a política de reinício automático de containers, contribui significativamente para a detecção e recuperação ágil de falhas. Além disso, o uso de um gateway central com *rate limiting* protege o sistema contra sobrecargas e ataques externos, mitigando riscos de indisponibilidade.
+
+A segmentação dos serviços em containers independentes, orquestrados por Docker Compose, permite substituições rápidas e minimamente invasivas em caso de falhas, reforçando o princípio de tolerância a falhas. A redundância de dados, com réplica do banco PostgreSQL, contribui ainda mais para a disponibilidade contínua dos serviços críticos.
+
+As táticas selecionadas cobrem as três dimensões principais da disponibilidade: detecção, recuperação e prevenção de falhas. Essas práticas, em conjunto, sustentam a meta de disponibilidade geral, limitando o impacto de falhas parciais ou intermitentes.
+
+## 6.3 Confiabilidade
+
+A confiabilidade do sistema é reforçada por práticas rigorosas de validação e gestão de transações. A adoção de validações em nível de entrada, *constraints* no banco de dados e *logging* estruturado com correlação de requisições assegura rastreabilidade e integridade dos dados.
+
+O uso extensivo de operações transacionais (`@Transactional`), *rollback* automático e idempotência em operações críticas (como envio de feedbacks) aumenta a previsibilidade do comportamento do sistema frente a falhas parciais. A política de backup com RPO e RTO claramente definidos mostra preocupação concreta com a recuperação segura de dados, alinhando-se com as expectativas de continuidade operacional.
+
+As táticas adotadas para confiabilidade reforçam o controle sobre erros e a recuperação segura de estados consistentes. A confiabilidade do sistema é ainda reforçada por restrições no banco de dados, que atuam como linha de defesa adicional para a integridade de dados.
+
+## 6.4 Segurança
+
+A arquitetura demonstra maturidade na abordagem de segurança, cobrindo prevenção, detecção e resposta a incidentes. A combinação de autenticação JWT, controle de acesso baseado em papéis (RBAC), criptografia em repouso com AES-256 e anonimização com *hash* salgado evidencia uma preocupação explícita com dados sensíveis — particularmente relevantes no contexto de saúde e bem-estar.
+
+Além disso, a centralização da autenticação no gateway, associada à segmentação de redes e restrição de acesso interno aos bancos de dados, mitiga a superfície de ataque. A presença de mecanismos de *audit logging* e bloqueios automáticos por IP suspeito mostra um compromisso real com a segurança em tempo de execução e conformidade com boas práticas de LGPD.
+
+A arquitetura adota um conjunto robusto de táticas para lidar com ameaças e que tornam o sistema resiliente frente a ameaças internas e externas, promovendo segurança como um pilar fundamental do design.
+
+## 6.5 Escalabilidade
+
+A arquitetura proposta é altamente escalável, tanto em termos horizontais quanto verticais. A decomposição em microserviços permite escalar apenas os módulos com maior demanda, como o `Wellness Service`, sem impacto nos demais. O uso de cache com Redis para dados de sessão e recomendações personalizadas reduz a pressão sobre o banco de dados e melhora a resposta sob carga.
+
+O gateway baseado em Nginx com balanceamento de carga *round-robin* e suporte a múltiplas instâncias dos serviços garante uma distribuição eficiente da carga. O modelo de dados com particionamento lógico por *schema* reforça a separação de responsabilidades e facilita ajustes finos no desempenho de *queries* críticas.
+
+A arquitetura está bem preparada para escalar horizontal e verticalmente por meio de técnicas bem estabelecidas que garantem resposta eficiente mesmo sob crescimento contínuo da base de usuários e volume de dados.
+
+## 6.6 Testabilidade
+
+A arquitetura proposta favorece significativamente a testabilidade do sistema, especialmente por adotar uma abordagem baseada em microserviços com responsabilidades bem definidas. A independência entre os módulos permite a realização de testes unitários de forma isolada, utilizando técnicas como mocks e stubs para simular dependências externas. Além disso, a comunicação entre serviços por meio de APIs REST padronizadas facilita a implementação de testes automatizados de integração com ferramentas como Postman, Jest ou Testcontainers.
+
+No entanto, alguns riscos precisam ser considerados, como a falta de cobertura em testes end-to-end, o que pode resultar em falhas não detectadas nas interações entre serviços. Outro ponto de atenção são os ambientes inconsistentes para testes, que podem comprometer a confiabilidade dos resultados dos testes automatizados. Para mitigar esses riscos, recomenda-se a criação de ambientes de staging que espelhem a produção, bem como a adoção de pipelines de integração contínua que incluam a execução automatizada de testes unitários e de integração.
+
+As decisões arquiteturais que contribuem diretamente para a testabilidade incluem a definição de interfaces REST bem documentadas e a separação da lógica de negócio em camadas específicas, o que facilita a criação de testes mais precisos e reutilizáveis. Conclui-se, portanto, que a arquitetura é altamente testável, oferecendo suporte adequado tanto para testes automatizados quanto para práticas de entrega contínua com maior segurança.
+
+## 6.7 Considerações Finais
+
+A arquitetura avaliada apresenta boa aderência aos atributos de qualidade definidos para o sistema. Seu modelo baseado em serviços, com delimitação clara de responsabilidades, oferece **suporte robusto à escalabilidade, confiabilidade e testabilidade**, com **boa base para disponibilidade e segurança**.
+
+
+
+
 
