@@ -1,0 +1,105 @@
+@startuml
+!define RECTANGLE class
+
+' Definição de cores e estilos
+skinparam backgroundColor #FEFEFE
+skinparam actor {
+    BackgroundColor #D4E1F5
+    BorderColor #4A90E2
+}
+skinparam usecase {
+    BackgroundColor #E8F5E9
+    BorderColor #66BB6A
+    FontSize 12
+}
+skinparam package {
+    BackgroundColor #F5F5F5
+    BorderColor #BDBDBD
+}
+
+' Título
+title Diagrama de Casos de Uso - Sistema de Bem-estar Corporativo
+
+' Atores posicionados estrategicamente
+actor "Colaborador" as COL
+actor "Administrador RH" as ADM
+actor "Especialista/\nProfissional Parceiro" as ESP
+
+' Sistema
+rectangle "Sistema de Bem-estar Corporativo" {
+    ' Layout organizando casos de uso por áreas funcionais
+    
+    ' Área de Alta Prioridade (topo)
+    usecase "Enviar Feedback\nAnônimo" as UC5 #FFE0B2
+    usecase "Participar de Reuniões\nde Bem-estar" as UC9 #FFE0B2
+    
+    ' Área de Média Prioridade (centro)
+    usecase "Visualizar Grade de\nServiços Externos" as UC2 #FFF9C4
+    usecase "Agendar Consultas\nVirtuais" as UC3 #FFF9C4
+    usecase "Receber Recomendações\nPersonalizadas" as UC6 #FFF9C4
+    usecase "Participar de\nDesafios Gamificados" as UC10 #FFF9C4
+    
+    ' Área de Baixa Prioridade (base)
+    usecase "Acessar Meditações e\nTécnicas de Respiração" as UC1
+    usecase "Receber Sugestões\nde Pausas" as UC4
+    usecase "Acessar Dicas\nde Ergonomia" as UC7
+    usecase "Configurar Lembretes\nde Hábitos Saudáveis" as UC8
+    
+    ' Casos de uso auxiliares (laterais)
+    usecase "Autenticar\nno Sistema" as AUTH #E1F5FE
+    usecase "Atender Consultas\nVirtuais" as ATEND #E1F5FE
+    usecase "Gerenciar\nReuniões" as GERREU #E1F5FE
+    usecase "Visualizar\nRelatórios" as REL #E1F5FE
+    usecase "Gerenciar\nConteúdos" as GER #E1F5FE
+}
+
+' Posicionamento dos atores
+COL -left- UC5
+ADM -right- REL
+ESP -up- ATEND
+
+' Relacionamentos - Colaborador (agrupados)
+COL --> UC1
+COL --> UC2
+COL --> UC3
+COL --> UC4
+COL --> UC5
+COL --> UC6
+COL --> UC7
+COL --> UC8
+COL --> UC9
+COL --> UC10
+COL -down-> AUTH
+
+' Relacionamentos - Especialista (simplificados)
+ESP --> ATEND
+ESP --> UC9
+ESP -down-> AUTH
+
+' Relacionamentos - Administrador RH (organizados)
+ADM --> REL
+ADM --> GER
+ADM --> GERREU
+ADM --> UC2
+ADM -down-> AUTH
+
+' Relacionamentos include (caso base INCLUI o auxiliar)
+UC3 ..> AUTH : <<include>>
+UC5 ..> AUTH : <<include>>
+UC9 ..> AUTH : <<include>>
+UC3 .left.> ATEND : <<include>>
+
+' Relacionamentos extend (opcional ESTENDE o base)
+GERREU .left.> UC9 : <<extend>>
+UC10 .up.> UC6 : <<extend>>
+
+' Legenda (reposicionada)
+legend bottom right
+    |= Cor |= Prioridade |
+    |<#FFE0B2> | Alta |
+    |<#FFF9C4> | Média |
+    |<#E8F5E9> | Baixa |
+    |<#E1F5FE> | Auxiliar |
+endlegend
+
+@enduml
