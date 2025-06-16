@@ -6,6 +6,8 @@ O sistema de bem-estar corporativo surge como resposta à crescente demanda por 
 
 Este sistema foi concebido como uma plataforma digital integrada, voltada ao fortalecimento do bem-estar no ambiente corporativo por meio de recursos que apoiam tanto a escuta ativa quanto a oferta de suporte personalizado. Seu escopo ultrapassa o simples monitoramento de indicadores de saúde, atuando também como instrumento de cultura organizacional positiva, transparência e valorização humana. 
 
+Além disso, o sistema incorpora recursos voltados ao estímulo ativo de práticas saudáveis no cotidiano corporativo, como lembretes personalizados de autocuidado, sugestões de pausas com base no uso do computador, trilhas de meditação e dicas de ergonomia. Essas funcionalidades ampliam o alcance da plataforma, indo além da escuta e apoio emocional para atuar diretamente na promoção de hábitos saudáveis e sustentáveis entre os colaboradores.
+
 ### 1.1 Motivação e Justificativa
 
 A saúde mental e o bem-estar no ambiente de trabalho deixaram de ser temas secundários para se tornarem pilares centrais da sustentabilidade organizacional. Pesquisas recentes apontam que ambientes tóxicos e a ausência de suporte emocional impactam diretamente nos índices de produtividade, absenteísmo, rotatividade e satisfação geral dos colaboradores.
@@ -24,6 +26,7 @@ O sistema tem como metas principais:
 - **Gerar inteligência organizacional**: apoiar gestores com relatórios e insights sobre o clima organizacional e as principais demandas de bem-estar.
 - **Facilitar integração com especialistas**: permitir que profissionais parceiros atuem diretamente na plataforma, mantendo a confidencialidade e o controle administrativo.
 - **Reduzir custos indiretos com saúde**: ao antecipar questões críticas por meio de indicadores comportamentais e intervenções oportunas.
+- Ampliar o acesso a recursos de saúde e bem-estar: oferecer serviços externos, conteúdos de ergonomia, meditações guiadas e lembretes personalizados que estimulem o autocuidado no cotidiano corporativo.
 
 Estes objetivos sustentam uma abordagem holística e contínua do bem-estar corporativo, transformando-o em um processo estruturado e mensurável — e não apenas em ações pontuais ou campanhas isoladas.
 
