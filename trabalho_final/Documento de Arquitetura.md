@@ -4,7 +4,7 @@
 
 O sistema de bem-estar corporativo surge como resposta à crescente demanda por ambientes de trabalho mais saudáveis e humanizados. Em um cenário onde a produtividade está cada vez mais ligada ao equilíbrio emocional e à satisfação dos colaboradores, as organizações buscam soluções tecnológicas que promovam a saúde integral de seus times de forma mensurável.
 
-Este sistema foi concebido como uma plataforma digital integrada, voltada ao fortalecimento do bem-estar no ambiente corporativo por meio de recursos que apoiam tanto a escuta ativa quanto a oferta de suporte personalizado. Seu escopo ultrapassa o simples monitoramento de indicadores de saúde, atuando também como instrumento de cultura organizacional positiva, transparência e valorização humana.
+Este sistema foi concebido como uma plataforma digital integrada, voltada ao fortalecimento do bem-estar no ambiente corporativo por meio de recursos que apoiam tanto a escuta ativa quanto a oferta de suporte personalizado. Seu escopo ultrapassa o simples monitoramento de indicadores de saúde, atuando também como instrumento de cultura organizacional positiva, transparência e valorização humana. 
 
 ### 1.1 Motivação e Justificativa
 
@@ -33,7 +33,11 @@ O sistema foi idealizado para operar como uma extensão natural da experiência 
 
 ## 2. Requisitos Arquiteturalmente Significativos (ASRs)
 
-Os Requisitos Arquiteturalmente Significativos são aqueles que têm impacto substancial nas decisões arquiteturais e na estrutura do sistema. Para o sistema de bem-estar corporativo, trataremos inicialmente dos requisitos funcionais de maior prioridade, seguidos pelos requisitos de qualidade que são arquiteturalmente significativos.
+Os Requisitos Arquiteturalmente Significativos (ASRs) são aqueles que têm impacto substancial nas decisões arquiteturais e na estrutura do sistema. Para o sistema de bem-estar corporativo, optamos por uma abordagem iterativa, **priorizando na primeira iteração os cinco requisitos com maior impacto funcional e arquitetural**, incluindo funcionalidades críticas do sistema. 
+
+Na segunda iteração, foram incorporados os requisitos restantes, de prioridade média e baixa, voltados principalmente a funcionalidades complementares. Essa estratégia permitiu iniciar a construção da espinha dorsal do sistema com foco em segurança, escalabilidade e integração externa, enquanto recursos auxiliares foram planejados para uma segunda fase, com menor impacto arquitetural direto, mas alto valor para a experiência do usuário.
+
+A seguir, os ASRs estão organizados por prioridade funcional, seguidos pelos requisitos de qualidade mais relevantes.
 
 ### 2.1 Requisitos Funcionais Prioritários
 
@@ -51,6 +55,21 @@ O sistema deve fornecer recomendações personalizadas baseadas no perfil de sa�
 
 #### RF-05 (Prioridade Média - ID 10): Desafios Gamificados
 O sistema deve permitir criar desafios de bem-estar com gamificação e reconhecimento. Necessita sistema de pontuação, rankings simples, e notificações.
+
+#### RF-06 (Prioridade Média - ID 2): Ofertas de Serviços Externos
+O sistema deve ofertar uma grade de serviços externos aos colaboradores, como lazer, atividades físicas e auxílios fora do trabalho, com possibilidade de atualizações periódicas. Impacta a arquitetura ao exigir mecanismos de configuração dinâmica e gerenciamento de conteúdo externo por parte da organização. 
+
+#### RF-07 (Prioridade Baixa - ID 1): Meditação e Técnicas de Respiração
+O sistema deve fornecer opções de áudios/guias para meditação e técnicas de respiração. Exige uma estrutura de mídia leve e um serviço de streaming interno ou integração com plataformas externas. 
+
+#### RF-08 (Prioridade Baixa - ID 4): Sugestões de Pausas com Base no Uso do Computador
+O sistema deve oferecer sugestões personalizadas de pausas para alongamento ou relaxamento, com base no tempo de uso do computador. Requer a coleta de eventos de atividade do usuário, análise de contexto e envio de sugestões em tempo real.
+
+#### RF-09 (Prioridade Baixa - ID 7): Dicas de Ergonomia para Home Office
+O sistema deve oferecer dicas de ergonomia para o home office, como ajustar a cadeira, altura do monitor e outros elementos. Pode ser implementado com conteúdos estáticos configuráveis por perfil de usuário.
+
+#### RF-10 (Prioridade Baixa - ID 8): Lembretes Personalizados de Hábitos Saudáveis
+O sistema deve permitir que funcionários configurem lembretes personalizados para hábitos saudáveis (beber água, fazer pausas, ajustar postura). Implica um agendador interno, capaz de gerar notificações contextuais e personalizadas.
 
 ### 2.2 Requisitos de Qualidade Arquiteturalmente Significativos
 
@@ -90,15 +109,27 @@ O **Wellness Service** concentra as funcionalidades de bem-estar: feedbacks anô
 
 O **Scheduling Service** gerencia agendamentos de consultas virtuais (RF-03) e reuniões com especialistas (RF-02). A separação deste serviço foi motivada pela necessidade de integração com sistemas externos como calendários e plataformas de videoconferência, isolando estas dependências externas dos demais domínios.
 
+Para contemplar os novos requisitos, o **Wellness Service** será estendido para incluir a gestão de lembretes personalizados (RF-10), dicas de ergonomia (RF-09), conteúdos de meditação (RF-07) e sugestões de pausas (RF-08), já que essas funcionalidades compartilham o foco em saúde preventiva e hábitos saudáveis. Um novo módulo interno de "Conteúdo e Notificações" será adicionado a este serviço. A funcionalidade de grade de serviços externos (RF-06) será tratada por um Content Manager integrado ao mesmo serviço, que permitirá a atualização dinâmica desses conteúdos. Por fim, a funcionalidade de grade de serviços externos (RF-06) será tratada por um Content Manager integrado ao mesmo serviço, que permitirá a atualização dinâmica desses conteúdos. 
+
 ### 3.2 Modelo de Coordenação
 
 A comunicação deve ser implementada predominantemente de forma síncrona via **REST APIs** para operações principais, atendendo ao requisito de escalabilidade (QA-04) através de simplicidade de implementação e debugging. Um **API Gateway simples** (nginx) serve como ponto de entrada único, implementando autenticação centralizada e rate limiting para suportar o crescimento de 500 para 5.000 usuários. Este API Gateway direcionará as requisições aos serviços correspondentes gerenciados pelo Docker Swarm. 
 
 Esta decisão foi influenciada pelo requisito de feedbacks anônimos (RF-01), que necessita de controle rigoroso de acesso e auditoria, beneficiando-se de um ponto de entrada centralizado onde todas as requisições podem ser logadas e monitoradas adequadamente.
 
+Para os lembretes e sugestões contextuais, o **Wellness Service** utilizará agendamento assíncrono por meio de tarefas periódicas internas (cron jobs ou scheduler do Spring), além de uma fila leve para envio de notificações. Os conteúdos estáticos (áudios, dicas, listas) serão servidos via endpoints REST e cacheados em Redis.
+
 ### 3.3 Modelo de Dados
 
-Optamos por **PostgreSQL** como banco de dados principal para todos os serviços, simplificando operações e atendendo ao requisito de confiabilidade. Cada serviço possui seu próprio schema isolado, garantindo que falhas em um domínio não afetem outros. Esta escolha foi especificamente motivada pelo requisito de feedbacks anônimos (RF-01), que necessita de transações ACID para garantir que dados sensíveis sejam anonimizados atomicamente.
+Adotamos o PostgreSQL como banco de dados principal do sistema, com organização lógica por schemas independentes para cada microserviço, a fim de garantir isolamento, facilitar manutenção e aumentar a resiliência da arquitetura. Cada schema corresponde a um domínio funcional do sistema:
+
+- user_data: contém entidades relacionadas à autenticação, perfis de usuário, sessões e permissões (User Service).
+
+- scheduling_data: armazena agendamentos de reuniões, consultas, e integrações com calendário externo (Scheduling Service).
+
+- wellness_data: reúne informações voltadas ao bem-estar, como feedbacks, recomendações, gamificação e conteúdos personalizados (Wellness Service).
+
+Essa divisão foi escolhida para reduzir o acoplamento entre serviços, evitar conflitos de dados e garantir que falhas ou mudanças em um domínio não afetem os demais. Cada serviço é responsável por manter seu schema e acessá-lo exclusivamente.
 
 Além disso, também decidimos por usar o **Redis** que atua como cache para sessões de usuário e dados de recomendações frequentemente acessados (RF-04), melhorando performance e atendendo ao requisito de escalabilidade (QA-04) ao reduzir carga no banco principal durante picos de uso.
 
@@ -532,8 +563,5 @@ As decisões arquiteturais que contribuem diretamente para a testabilidade inclu
 ## 6.7 Considerações Finais
 
 A arquitetura avaliada apresenta boa aderência aos atributos de qualidade definidos para o sistema. Seu modelo baseado em serviços, com delimitação clara de responsabilidades, oferece **suporte robusto à escalabilidade, confiabilidade e testabilidade**, com **boa base para disponibilidade e segurança**.
-
-
-
 
 
