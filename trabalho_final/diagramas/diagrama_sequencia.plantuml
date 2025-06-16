@@ -1,0 +1,37 @@
+@startuml
+skinparam style strictuml
+hide footbox
+
+participant "Colaborador (Frontend)" as Colaborador
+participant "API Gateway (Nginx)" as APIGateway
+participant "User Service" as UserService
+participant "Wellness Service" as WellnessService
+participant "PostgreSQL (wellness_data)" as DBWellness
+participant "Redis (cache de sessões)" as Redis
+
+Colaborador -> APIGateway: POST /api/feedback (JSON com feedback)
+activate APIGateway
+
+APIGateway -> UserService: Autenticar Token (JWT)
+activate UserService
+UserService --> APIGateway: Token Válido (ou erro de autenticação)
+deactivate UserService
+
+APIGateway -> WellnessService: POST /wellness/feedback (com ID de usuário anonimizado)
+activate WellnessService
+
+WellnessService -> WellnessService: Gerar Hash Irreversível do ID do Usuário
+WellnessService -> WellnessService: Criptografar Conteúdo do Feedback (AES-256)
+
+WellnessService -> DBWellness: INSERT INTO feedbacks_anonimos (feedback_anonimo, hash_usuario, data)
+activate DBWellness
+DBWellness --> WellnessService: Sucesso
+deactivate DBWellness
+
+WellnessService --> APIGateway: HTTP 201 Created (Feedback Recebido)
+deactivate WellnessService
+
+APIGateway --> Colaborador: HTTP 201 Created (Confirmação de Envio)
+deactivate APIGateway
+
+@enduml
