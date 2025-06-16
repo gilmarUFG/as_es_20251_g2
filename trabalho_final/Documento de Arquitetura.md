@@ -560,7 +560,15 @@ No entanto, alguns riscos precisam ser considerados, como a falta de cobertura e
 
 As decisões arquiteturais que contribuem diretamente para a testabilidade incluem a definição de interfaces REST bem documentadas e a separação da lógica de negócio em camadas específicas, o que facilita a criação de testes mais precisos e reutilizáveis. Conclui-se, portanto, que a arquitetura é altamente testável, oferecendo suporte adequado tanto para testes automatizados quanto para práticas de entrega contínua com maior segurança.
 
-## 6.7 Considerações Finais
+## 6.7 Manutenibilidade
+
+A arquitetura adotada prioriza a manutenibilidade ao estruturar o sistema com base em princípios de baixo acoplamento e alta coesão. A separação de responsabilidades por meio de microserviços e camadas bem definidas (API, serviço, repositório) facilita a localização e modificação de funcionalidades específicas sem afetar módulos não relacionados.
+
+O uso de convenções padronizadas para nomes, estruturas de projeto e contratos REST documentados (via Swagger/OpenAPI) reduz a curva de aprendizado para novos desenvolvedores e torna as alterações mais previsíveis. Além disso, a adoção de testes automatizados e pipelines de CI/CD promove feedback rápido, essencial para manter o sistema com qualidade durante mudanças.
+
+A documentação de decisões arquiteturais (ADR – Architecture Decision Records) complementa esse esforço, permitindo que os desenvolvedores compreendam rapidamente os motivos por trás das escolhas técnicas feitas. Isso reduz o risco de regressões ou decisões contraditórias no futuro.
+
+## 6.8 Considerações Finais
 
 A arquitetura avaliada apresenta boa aderência aos atributos de qualidade definidos para o sistema. Seu modelo baseado em serviços, com delimitação clara de responsabilidades, oferece **suporte robusto à escalabilidade, confiabilidade e testabilidade**, com **boa base para disponibilidade e segurança**.
 
