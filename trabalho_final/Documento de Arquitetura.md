@@ -271,6 +271,23 @@ A visão de alocação mapeia elementos de software para elementos do ambiente d
 - Conexões externas apenas via HTTPS
 - Rate limiting configurado no gateway
 
+### 4.3.3 Cloud Infrastructure
+
+**Plataforma de Hospedagem**
+- Amazon Web Services (AWS)
+- Atende requisitos de LGPD e latência adequada para usuários brasileiros
+
+**Infraestrutura AWS**
+- EC2 instances para hospedar containers Docker
+- Docker Compose gerenciando nginx, microserviços, PostgreSQL e Redis
+- Application Load Balancer direcionando tráfego para nginx
+- VPC dedicada com subnets para isolamento de rede
+
+**Monitoramento e Backup**
+- Amazon CloudWatch para métricas e logs dos containers
+- Backup automatizado do PostgreSQL (RPO 4h, RTO 2h conforme QA-02)
+- Alertas automáticos para atendimento de QA-01 (disponibilidade 99,5%)
+
 ## 4.4 Visão de Informação
 
 Esta visão descreve a estrutura e fluxo dos dados no sistema, essencial para compreender como as informações são capturadas, processadas e armazenadas.
