@@ -17,6 +17,7 @@ package "Aplicativo de Bem-Estar Corporativo" {
 
     package "Módulo de Interação com Usuário" {
         [Gerenciador de Feedback]
+        [Sistema de Desafios]
         [Sistema de Reports Anônimos]
     }
 
@@ -28,6 +29,7 @@ package "Aplicativo de Bem-Estar Corporativo" {
     package "Módulo de Inteligência de Uso" {
         [Detector de Padrões de Uso]
         [Sistema de Pausas]
+        [Sistema de Lembretes]
         [Recomendações Personalizadas]
     }
 
