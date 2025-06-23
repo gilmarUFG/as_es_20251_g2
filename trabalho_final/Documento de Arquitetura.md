@@ -50,10 +50,10 @@ O aplicativo deve incluir funcionalidade para que colaboradores possam dar feedb
 #### RF-02 (Prioridade Alta - ID 9): Agendamento de Reuniões de Bem-estar  
 O sistema deve permitir agendar reuniões que promovam bem-estar com participação de profissionais parceiros como psicólogos e especialistas. Requer integração com sistemas de calendário, gestão de usuários externos, e sistema de notificações.
 
-#### RF-03 (Prioridade Média - ID 3): Consultas Virtuais
+#### RF-03 (Prioridade Alta - ID 3): Consultas Virtuais
 O sistema deve permitir marcação de consultas virtuais com especialistas em saúde e bem-estar. Necessita integração com plataformas de videoconferência e gestão de agendamentos.
 
-#### RF-04 (Prioridade Média - ID 6): Recomendações Personalizadas
+#### RF-04 (Prioridade Alta - ID 6): Recomendações Personalizadas
 O sistema deve fornecer recomendações personalizadas baseadas no perfil de saúde e hábitos de trabalho. Requer motor de recomendação e análise de dados comportamentais básicos.
 
 #### RF-05 (Prioridade Média - ID 10): Desafios Gamificados
