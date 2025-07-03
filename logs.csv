@@ -1,0 +1,175 @@
+commit 2002fd8607344b7c6561def0a67b8bb2d1351be7
+Author: Gilmar Ferreira Arantes <gilmar.arantes@ufg.br>
+Date:   Sun Jun 29 12:37:16 2025 -0300
+
+    update repository
+
+commit 8f08de7aff1a2a857b6d1edf76c82e5651d9d141
+Merge: 9c3b8d8 feec3c9
+Author: Gilmar Ferreira Arantes <gilmar.arantes@ufg.br>
+Date:   Wed Jun 25 19:39:18 2025 -0300
+
+    Merge branch 'estudante' of https://github.com/gilmarUFG/as_es_20251_g2 into estudante
+
+commit 9c3b8d8e37d680ebcbb54268ad652d1247d886a9
+Author: Gilmar Ferreira Arantes <gilmar.arantes@ufg.br>
+Date:   Wed Jun 25 19:38:59 2025 -0300
+
+    update repository
+
+commit feec3c9bf2674f0a0c94fe442d625577477be349
+Author: Lucas Nunes <lucasnunnes40@gmail.com>
+Date:   Wed Jun 25 14:09:36 2025 -0300
+
+    adicionando apresentação do trabalho final
+
+commit bdf2429e1a9737fd1ef37073fc61a38229aa7a09
+Author: Sophia Almeida <106751626+sophiafma@users.noreply.github.com>
+Date:   Mon Jun 23 16:12:44 2025 -0300
+
+    Update Documento de Arquitetura.md
+
+commit 41d2399a50a8f0d26b3c7585047301e2255a8146
+Author: Arthurnucada <131211101+Arthurnucada@users.noreply.github.com>
+Date:   Mon Jun 16 21:38:56 2025 -0300
+
+    Update diagrama_componentes.plantuml
+
+commit 482e6303bf9a1596b34734cd2f2ca3f4cb4fa572
+Author: Sophia Almeida <106751626+sophiafma@users.noreply.github.com>
+Date:   Mon Jun 16 21:14:14 2025 -0300
+
+    update visão de alocação do Documento de Arquitetura
+
+commit 33318ddd3ee63c4be6b9d14bf798ec3ee77b4763
+Author: jntlvr <131724696+jntlvr@users.noreply.github.com>
+Date:   Mon Jun 16 20:31:28 2025 -0300
+
+    Visão Geral do Sistema 2ª Iteração.md
+
+commit c29e2d393ae1fe796fabb0b6672240c1ade465f8
+Author: jntlvr <131724696+jntlvr@users.noreply.github.com>
+Date:   Mon Jun 16 20:22:40 2025 -0300
+
+    Análise de Qualidade 2ª Iteração.md
+
+commit ac34477522b9cb210621dc8eb0505fde10c5503f
+Author: Sophia Almeida <106751626+sophiafma@users.noreply.github.com>
+Date:   Mon Jun 16 18:52:29 2025 -0300
+
+    add diagrama de casos de uso - 2° iteração
+
+commit 88fb994fdd24d5e43b4cd884d097f1427b0fda3a
+Author: Lucas Nunes <lucasnunnes40@gmail.com>
+Date:   Mon Jun 16 17:12:10 2025 -0300
+
+    add diagrama sequencia - segunda iteração
+
+commit 0d3b5d032733223b403511bc72efec82a9313094
+Author: Sophia Almeida <106751626+sophiafma@users.noreply.github.com>
+Date:   Mon Jun 16 16:29:42 2025 -0300
+
+    update Documento de Arquitetura.md para 2° iteração
+
+commit 436dd9381f6afc1aac61485f0fa31047809fef6a
+Author: jntlvr <131724696+jntlvr@users.noreply.github.com>
+Date:   Mon May 26 21:18:53 2025 -0300
+
+    Adição da Análise de Qualidade
+
+commit 62e40320575c1c476a26243b3e98efe9e1ec1df4
+Merge: e3b8cbd 2a4ffb0
+Author: Gilmar Ferreira Arantes <gilmar.arantes@ufg.br>
+Date:   Mon May 26 19:11:33 2025 -0300
+
+    Merge branch 'main' into estudante
+
+commit 2a4ffb0a1a22d673fbce827de2bccff4c4958fab
+Author: Gilmar Ferreira Arantes <gilmar.arantes@ufg.br>
+Date:   Mon May 26 19:07:59 2025 -0300
+
+    update repository
+
+commit e3b8cbdf8f58b2737d9b0446c211fd913a961253
+Author: Victor M. Vieira <53177932+vmvuno@users.noreply.github.com>
+Date:   Mon May 26 17:22:45 2025 -0300
+
+    Adicionando diagrama arquitetural
+
+commit 7eb4f7a22714918554e24d3efdf4191e94002df1
+Author: Arthurnucada <131211101+Arthurnucada@users.noreply.github.com>
+Date:   Mon May 26 14:11:20 2025 -0300
+
+    Add diagrama_componentes
+
+commit edab6cf9805385c05917af1e4a16e9e7ca0b7787
+Author: Sophia Almeida <106751626+sophiafma@users.noreply.github.com>
+Date:   Mon May 26 13:29:50 2025 -0300
+
+    Alterando decisão de gerenciamento de recurso
+
+commit c108e98fb0d4f040d84452f31effe9e01f6bc962
+Author: Lucas Nunes <lucasnunnes40@gmail.com>
+Date:   Sun May 25 23:12:43 2025 -0300
+
+    adicionando topicos 4 e 5
+
+commit 53ce720cf08f923b3e3376d9d8c9e231dd9b7a5c
+Author: jntlvr <131724696+jntlvr@users.noreply.github.com>
+Date:   Sun May 25 22:49:42 2025 -0300
+
+    Visão geral do sistema
+
+commit ef080a562e0b3891143be45d34dbd619829dbe6b
+Author: Sophia Almeida <106751626+sophiafma@users.noreply.github.com>
+Date:   Sun May 25 22:20:23 2025 -0300
+
+    Alterando Documento de Arquitetura.md
+
+commit 3e067e10595d49d882b04c180d7fc8bff64965b1
+Author: sophiafma <sophialmeida03@gmail.com>
+Date:   Sun May 25 21:57:55 2025 -0300
+
+    Adicionando documento de arquitetura
+
+commit 0a6bcc26e621eb02f202603bc0e1c3bc0af44e4b
+Author: Lucas Nunes <lucasnunnes40@gmail.com>
+Date:   Sun May 4 18:44:04 2025 +0000
+
+    add 10 requisitos que serão trabalhados
+
+commit 2ddad3acdb9dcb7a80cf09413c144a5c198fe049
+Author: Sophia Almeida <106751626+sophiafma@users.noreply.github.com>
+Date:   Sun Apr 27 17:16:31 2025 -0300
+
+    adicionando atividade supervisionada 4
+
+commit 5ab8b6053679274f9841c4db4d874d60633da563
+Author: Gilmar Ferreira Arantes <gilmar.arantes@ufg.br>
+Date:   Sat Apr 19 12:45:00 2025 -0300
+
+    update repository
+
+commit 44f47819631930e9472031b90a4d3b2da5c8fa3e
+Author: jntlvr <131724696+jntlvr@users.noreply.github.com>
+Date:   Mon Mar 24 21:25:51 2025 -0300
+
+    Create Atividade pratica 3.md
+
+commit 74aeb4a5296170d4d24e1310f47846305a0fbf4a
+Author: Lucas Nunes <lucasnunnes40@gmail.com>
+Date:   Mon Mar 17 23:32:22 2025 -0100
+
+    atividade pratica aula 2
+
+commit d06aeec49eabf731d53e7b35067329332d43c1ac
+Author: Gilmar Ferreira Arantes <gilmar.arantes@ufg.br>
+Date:   Fri Feb 28 17:04:03 2025 -0300
+
+    Update README.md file.
+
+commit b42927662ade11f7ae29b07743f04762a9b9e6ad
+Author: Gilmar Ferreira Arantes <130784207+gilmarUFG@users.noreply.github.com>
+Date:   Fri Feb 28 14:26:02 2025 -0300
+
+    Initial commit
